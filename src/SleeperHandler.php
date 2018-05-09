@@ -81,8 +81,9 @@ class SleeperHandler{
 		while(true){
 			$this->processNotifications();
 
+
 			$sleepTime = (int) (($unixTime - microtime(true)) * 1000000);
-			if($sleepTime > 1000){ //wait conditions don't guarantee accuracy on timeouts, allow some diff
+			if($sleepTime > 0){
 				$this->threadedSleeper->sleep($sleepTime);
 			}else{
 				break;

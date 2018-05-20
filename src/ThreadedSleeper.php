@@ -62,8 +62,16 @@ class ThreadedSleeper extends \Threaded{
 	 * @param int $notifCount
 	 */
 	public function clearNotifications(int $notifCount) : void{
-		$this->notifCount -= $notifCount;
-		assert($this->notifCount >= 0, "notification count should be >= 0, got $this->notifCount");
+		$this->synchronized(function() use ($notifCount) : void{
+			/*
+			child threads can flag themselves as having a notification, which can get detected while the server is
+			awake. In these cases it's possible for the notification count to drop below zero due to getting
+			decremented here before incrementing on the child thread. This is quite a psychotic edge case, but it
+			means that it's necessary to synchronize for this, even though it's a simple statement.
+			*/
+			$this->notifCount -= $notifCount;
+			assert($this->notifCount >= 0, "notification count should be >= 0, got $this->notifCount");
+		});
 	}
 
 	public function hasNotifications() : bool{

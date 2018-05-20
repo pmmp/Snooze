@@ -52,11 +52,13 @@ class SleeperNotifier extends \Threaded{
 	final public function wakeupSleeper() : void{
 		assert($this->threadedSleeper !== null);
 
-		if(!$this->notification){
-			$this->notification = true;
+		$this->synchronized(function() : void{
+			if(!$this->notification){
+				$this->notification = true;
 
-			$this->threadedSleeper->wakeup();
-		}
+				$this->threadedSleeper->wakeup();
+			}
+		});
 	}
 
 	final public function hasNotification() : bool{
@@ -64,6 +66,9 @@ class SleeperNotifier extends \Threaded{
 	}
 
 	final public function clearNotification() : void{
-		$this->notification = false;
+		$this->synchronized(function() : void{
+			//this has to be synchronized to avoid races with waking up
+			$this->notification = false;
+		});
 	}
 }

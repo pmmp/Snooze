@@ -39,6 +39,7 @@ class ThreadedSleeper extends \Threaded{
 	 */
 	public function sleep(int $timeout = 0) : void{
 		$this->synchronized(function(int $timeout) : void{
+			assert($this->notifCount >= 0, "notification count should be >= 0, got $this->notifCount");
 			if($this->notifCount === 0){
 				$this->wait($timeout);
 			}
@@ -62,6 +63,7 @@ class ThreadedSleeper extends \Threaded{
 	 */
 	public function clearNotifications(int $notifCount) : void{
 		$this->notifCount -= $notifCount;
+		assert($this->notifCount >= 0, "notification count should be >= 0, got $this->notifCount");
 	}
 
 	public function hasNotifications() : bool{

@@ -110,9 +110,19 @@ class SleeperHandler{
 					++$processed;
 
 					$notifier->clearNotification();
-					$this->handlers[$id]();
+					if(isset($this->notifiers[$id])){
+						/*
+						 * Notifiers can end up getting removed due to a previous notifier's callback. Since a foreach
+						 * iterates on a copy of the notifiers array, the removal isn't reflected by the foreach. This
+						 * ensures that we do not attempt to fire callbacks for notifiers which have been removed.
+						 */
+						assert(isset($this->handlers[$id]));
+						$this->handlers[$id]();
+					}
 				}
 			}
+
+			assert($processed > 0);
 
 			$this->threadedSleeper->clearNotifications($processed);
 		}

@@ -7,34 +7,49 @@ This library allows a parent thread to conveniently process notifications from a
 ## Example
 ```php
 class SleepyThread extends \Thread{
+	/** @var \pocketmine\snooze\SleeperNotifier */
 	private $notifier;
+	/** @var \Threaded */
+	private $buffer;
 
 	public function __construct(\pocketmine\snooze\SleeperNotifier $notifier){
 		$this->notifier = $notifier;
+		$this->buffer = new \Threaded();
 	}
 
 	public function run() : void{
+		$stdin = fopen('php://stdin', 'r');
 		while(true){
-			//do some work
-			sleep(5);
+			echo "Type something and press ENTER:\n";
+			//do whatever you're doing
+			$line = fgets($stdin); //blocks until the user enters something
 
-			//send a notification to the main thread
-			//the parent thread doesn't have to be sleeping to receive this, it'll process it next time it tries to go 
+			//add the line to the buffer
+			$this->buffer[] = $line;
+
+			//send a notification to the main thread to tell it that we read a line
+			//the parent thread doesn't have to be sleeping to receive this, it'll process it next time it tries to go
 			//back to sleep
 			//if the parent thread is sleeping, it'll be woken up to process notifications immediately.
 			$this->notifier->wakeupSleeper();
 		}
 	}
+
+	public function getLineFromBuffer() : ?string{
+		return $this->buffer->shift();
+	}
 }
 
 $sleeper = new \pocketmine\snooze\SleeperHandler();
 
-$sleeper->addNotifier($notifier = new \pocketmine\snooze\SleeperNotifier(), function() : void{
+$notifier = new \pocketmine\snooze\SleeperNotifier();
+$thread = new SleepyThread($notifier);
+$sleeper->addNotifier($notifier, function() use($thread) : void{
 	//do some things when this notifier sends a notification
-	echo "Sleepy thread woke us up!\n";
+	echo "Main thread got line: " . $thread->getLineFromBuffer();
 });
 
-$thread = new SleepyThread($notifier);
+//don't start the thread until we add the notifier, otherwise we could get unexpected behaviour (race conditions)
 $thread->start();
 
 while(true){

@@ -23,6 +23,9 @@ declare(strict_types=1);
 
 namespace pocketmine\snooze;
 
+use function assert;
+use function microtime;
+
 /**
  * Manages a Threaded sleeper which can be waited on for notifications. Calls callbacks for attached notifiers when
  * notifications are received from the notifiers.

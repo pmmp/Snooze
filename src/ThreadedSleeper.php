@@ -23,6 +23,8 @@ declare(strict_types=1);
 
 namespace pocketmine\snooze;
 
+use function assert;
+
 /**
  * Notifiable Threaded class which tracks counts of notifications it receives.
  */

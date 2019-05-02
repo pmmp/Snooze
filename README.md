@@ -2,7 +2,7 @@
 Event-driven thread notification management library for code using the pthreads extension
 
 ## Use cases
-This library allows a parent thread to conveniently process notifications from an array of child threads, firing callbacks when a notification is received.
+This library allows a parent thread to conveniently process notifications from an array of child threads, firing callbacks when a notification is received. In essence, this library allows you to simulate the `select()` call, but for threads instead.
 
 ## Example
 ```php

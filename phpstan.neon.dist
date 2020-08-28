@@ -1,3 +1,6 @@
+includes:
+	- tests/phpstan/configs/architectural-issues.neon
+
 parameters:
 	level: 8
 	paths:

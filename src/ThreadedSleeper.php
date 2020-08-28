@@ -52,7 +52,7 @@ class ThreadedSleeper extends \Threaded{
 	 * Call this from sleeper notifiers to wake up the main thread.
 	 */
 	public function wakeup() : void{
-		$this->synchronized(function(){
+		$this->synchronized(function() : void{
 			++$this->notifCount;
 			$this->notify();
 		});

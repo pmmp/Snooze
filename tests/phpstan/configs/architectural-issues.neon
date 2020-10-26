@@ -1,7 +1,0 @@
-parameters:
-	ignoreErrors:
-		-
-			message: "#^Call to function assert\\(\\) with bool will always evaluate to true\\.$#"
-			count: 1
-			path: ../../../src/SleeperNotifier.php
-

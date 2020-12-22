@@ -60,8 +60,6 @@ class ThreadedSleeper extends \Threaded{
 
 	/**
 	 * Decreases pending notification count by the given number.
-	 *
-	 * @param int $notifCount
 	 */
 	public function clearNotifications(int $notifCount) : void{
 		$this->synchronized(function() use ($notifCount) : void{

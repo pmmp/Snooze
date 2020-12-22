@@ -49,7 +49,6 @@ class SleeperHandler{
 	}
 
 	/**
-	 * @param SleeperNotifier $notifier
 	 * @param callable        $handler Called when the notifier wakes the server up, of the signature `function() : void`
 	 * @phpstan-param callable() : void $handler
 	 */
@@ -62,8 +61,6 @@ class SleeperHandler{
 	/**
 	 * Removes a notifier from the sleeper. Note that this does not prevent the notifier waking the sleeper up - it just
 	 * stops the notifier getting actions processed from the main thread.
-	 *
-	 * @param SleeperNotifier $notifier
 	 */
 	public function removeNotifier(SleeperNotifier $notifier) : void{
 		unset($this->notifiers[$notifier->getSleeperId()]);
@@ -72,8 +69,6 @@ class SleeperHandler{
 	/**
 	 * Sleeps until the given timestamp. Sleep may be interrupted by notifications, which will be processed before going
 	 * back to sleep.
-	 *
-	 * @param float $unixTime
 	 */
 	public function sleepUntil(float $unixTime) : void{
 		while(true){

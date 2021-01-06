@@ -31,7 +31,7 @@ namespace pocketmine\snooze;
 final class NotifierEntry{
 
 	/** @var SleeperNotifier */
-	private SleeperNotifier $notifier;
+	private $notifier;
 	/**
 	 * @var callable
 	 * @phpstan-var callable() : void

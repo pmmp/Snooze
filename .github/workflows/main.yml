@@ -17,6 +17,8 @@ jobs:
             pthreads-version: 34d7e6b91ed92a625760fedd667e7cba2009e463
           - php: 7.4.13
             pthreads-version: 34d7e6b91ed92a625760fedd667e7cba2009e463
+          - php: 8.0.1
+            pthreads-version: bc16ee7b5a21faee9bd1743f830f7135b763fb56
 
     name: PHP ${{ matrix.php }}
     runs-on: ubuntu-latest

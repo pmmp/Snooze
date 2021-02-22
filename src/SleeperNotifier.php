@@ -54,11 +54,15 @@ class SleeperNotifier extends \Threaded{
 	final public function wakeupSleeper() : void{
 		assert($this->threadedSleeper !== null);
 
-		$this->synchronized(function() : void{
+		$this->threadedSleeper->synchronized(function() : void{
 			if(!$this->notification){
 				$this->notification = true;
-
-				$this->threadedSleeper->wakeup();
+				/*
+				 * if we didn't synchronize with ThreadedSleeper, the main thread might detect the notification
+				 * (notification = true by this point in the code), process and decrement notification count, all before
+				 * we got a chance to increment it and wake up the sleeper in the first place, leading to an underflow.
+				 */
+				$this->threadedSleeper->wakeupNoSync();
 			}
 		});
 	}
@@ -68,8 +72,9 @@ class SleeperNotifier extends \Threaded{
 	}
 
 	final public function clearNotification() : void{
-		$this->synchronized(function() : void{
-			//this has to be synchronized to avoid races with waking up
+		/* wakeupSleeper() synchronizes with ThreadedSleeper, we must do the same here. */
+		$this->threadedSleeper->synchronized(function() : void{
+			$this->threadedSleeper->clearNotificationNoSync();
 			$this->notification = false;
 		});
 	}

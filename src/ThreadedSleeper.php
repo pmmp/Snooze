@@ -49,29 +49,22 @@ class ThreadedSleeper extends \Threaded{
 	}
 
 	/**
-	 * Call this from sleeper notifiers to wake up the main thread.
+	 * @internal
+	 * Called by SleeperNotifier to send a notification to the main thread.
+	 * This MUST be called while synchronized with this object.
 	 */
-	public function wakeup() : void{
-		$this->synchronized(function() : void{
-			++$this->notifCount;
-			$this->notify();
-		});
+	public function wakeupNoSync() : void{
+		++$this->notifCount;
+		$this->notify();
 	}
 
 	/**
-	 * Decreases pending notification count by the given number.
+	 * @internal
+	 * Called by SleeperNotifier to decrement refcount when notifications are cleared.
+	 * This MUST be called while synchronized with this object.
 	 */
-	public function clearNotifications(int $notifCount) : void{
-		$this->synchronized(function() use ($notifCount) : void{
-			/*
-			child threads can flag themselves as having a notification, which can get detected while the server is
-			awake. In these cases it's possible for the notification count to drop below zero due to getting
-			decremented here before incrementing on the child thread. This is quite a psychotic edge case, but it
-			means that it's necessary to synchronize for this, even though it's a simple statement.
-			*/
-			$this->notifCount -= $notifCount;
-			assert($this->notifCount >= 0, "notification count should be >= 0, got $this->notifCount");
-		});
+	public function clearNotificationNoSync() : void{
+		--$this->notifCount;
 	}
 
 	public function hasNotifications() : bool{

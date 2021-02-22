@@ -116,8 +116,6 @@ class SleeperHandler{
 			}
 
 			assert($processed > 0);
-
-			$this->threadedSleeper->clearNotifications($processed);
 		}
 	}
 }

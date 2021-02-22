@@ -2,7 +2,13 @@
 Event-driven thread notification management library for code using the pthreads extension
 
 ## Use cases
-This library allows a parent thread to conveniently process notifications from an array of child threads, firing callbacks when a notification is received. In essence, this library allows you to simulate the `select()` call, but for threads instead.
+ext-pthreads currently doesn't make it conveniently possible to `wait()` for notifications from multiple threads simultaneously.
+This library allows you to do that using a `SleeperHandler`.
+
+Every thread must receive its own `SleeperNotifier` (since they are thread-safe, you can share notifiers between threads, but it's recommended not to).
+The thread should call `wakeupSleeper()` on its `SleeperNotifier`, which will cause the thread waiting on `SleeperHandler` to wake up and process whatever notification was delivered.
+
+It's similar to using the `select()` system call on an array of sockets or file descriptors, but with threads instead.
 
 ## Example
 ```php

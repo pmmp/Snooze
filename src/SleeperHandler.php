@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace pocketmine\snooze;
 
-use function assert;
+use function count;
 use function microtime;
 
 /**
@@ -31,8 +31,8 @@ use function microtime;
  * notifications are received from the notifiers.
  */
 class SleeperHandler{
-	/** @var ThreadedSleeper */
-	private $threadedSleeper;
+	/** @var \Threaded */
+	private $sharedObject;
 
 	/** @var NotifierEntry[] */
 	private $notifiers = [];
@@ -41,11 +41,7 @@ class SleeperHandler{
 	private $nextSleeperId = 0;
 
 	public function __construct(){
-		$this->threadedSleeper = new ThreadedSleeper();
-	}
-
-	public function getThreadedSleeper() : ThreadedSleeper{
-		return $this->threadedSleeper;
+		$this->sharedObject = new \Threaded();
 	}
 
 	/**
@@ -54,7 +50,7 @@ class SleeperHandler{
 	 */
 	public function addNotifier(SleeperNotifier $notifier, callable $handler) : void{
 		$id = $this->nextSleeperId++;
-		$notifier->attachSleeper($this->threadedSleeper, $id);
+		$notifier->attachSleeper($this->sharedObject, $id);
 		$this->notifiers[$id] = new NotifierEntry($notifier, $handler);
 	}
 
@@ -64,6 +60,14 @@ class SleeperHandler{
 	 */
 	public function removeNotifier(SleeperNotifier $notifier) : void{
 		unset($this->notifiers[$notifier->getSleeperId()]);
+	}
+
+	private function sleep(int $timeout) : void{
+		$this->sharedObject->synchronized(function(int $timeout) : void{
+			if($this->sharedObject->count() === 0){
+				$this->sharedObject->wait($timeout);
+			}
+		}, $timeout);
 	}
 
 	/**
@@ -76,7 +80,7 @@ class SleeperHandler{
 
 			$sleepTime = (int) (($unixTime - microtime(true)) * 1000000);
 			if($sleepTime > 0){
-				$this->threadedSleeper->sleep($sleepTime);
+				$this->sleep($sleepTime);
 			}else{
 				break;
 			}
@@ -88,7 +92,7 @@ class SleeperHandler{
 	 * already waiting.
 	 */
 	public function sleepUntilNotification() : void{
-		$this->threadedSleeper->sleep(0);
+		$this->sleep(0);
 		$this->processNotifications();
 	}
 
@@ -96,26 +100,25 @@ class SleeperHandler{
 	 * Processes any notifications from notifiers and calls handlers for received notifications.
 	 */
 	public function processNotifications() : void{
-		while($this->threadedSleeper->hasNotifications()){
-			$processed = 0;
-			foreach($this->notifiers as $id => $entry){
-				$notifier = $entry->getNotifier();
-				if($notifier->hasNotification()){
-					++$processed;
-
-					$notifier->clearNotification();
-					if(isset($this->notifiers[$id])){
-						/*
-						 * Notifiers can end up getting removed due to a previous notifier's callback. Since a foreach
-						 * iterates on a copy of the notifiers array, the removal isn't reflected by the foreach. This
-						 * ensures that we do not attempt to fire callbacks for notifiers which have been removed.
-						 */
-						$entry->getCallback()();
-					}
+		while(true){
+			$notifierIds = $this->sharedObject->synchronized(function() : array{
+				$notifierIds = [];
+				foreach($this->sharedObject as $notifierId => $_){
+					$notifierIds[$notifierId] = $notifierId;
+					unset($this->sharedObject[$notifierId]);
 				}
+				return $notifierIds;
+			});
+			if(count($notifierIds) === 0){
+				break;
 			}
-
-			assert($processed > 0);
+			foreach($notifierIds as $notifierId){
+				if(!isset($this->notifiers[$notifierId])){
+					//a previously-removed notifier might still be sending notifications; ignore them
+					continue;
+				}
+				$this->notifiers[$notifierId]->getCallback()();
+			}
 		}
 	}
 }

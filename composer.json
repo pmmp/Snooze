@@ -3,7 +3,7 @@
     "description": "Thread notification management library for code using the pthreads extension",
     "type": "library",
     "require": {
-        "php-64bit": "^7.2 || ^8.0",
+        "php-64bit": "^7.3 || ^8.0",
         "ext-pthreads": ">=3.1.7dev"
     },
     "require-dev": {

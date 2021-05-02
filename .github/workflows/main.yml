@@ -11,8 +11,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - php: 7.2.34
-            pthreads-version: 46962cf9c2d30b6e1e1ea50ca36de3df5d6d4e58
           - php: 7.3.25
             pthreads-version: 34d7e6b91ed92a625760fedd667e7cba2009e463
           - php: 7.4.13

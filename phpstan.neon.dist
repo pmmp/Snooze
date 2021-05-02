@@ -1,3 +1,6 @@
+includes:
+	- tests/phpstan/configs/phpstan-bugs.neon
+
 parameters:
 	level: 8
 	paths:

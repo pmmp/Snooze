@@ -34,7 +34,10 @@ class SleeperHandler{
 	/** @var \Threaded */
 	private $sharedObject;
 
-	/** @var NotifierEntry[] */
+	/**
+	 * @var callable[]
+	 * @phpstan-var array<int, callable() : void>
+	 */
 	private $notifiers = [];
 
 	/** @var int */
@@ -51,7 +54,7 @@ class SleeperHandler{
 	public function addNotifier(SleeperNotifier $notifier, callable $handler) : void{
 		$id = $this->nextSleeperId++;
 		$notifier->attachSleeper($this->sharedObject, $id);
-		$this->notifiers[$id] = new NotifierEntry($notifier, $handler);
+		$this->notifiers[$id] = $handler;
 	}
 
 	/**
@@ -117,7 +120,7 @@ class SleeperHandler{
 					//a previously-removed notifier might still be sending notifications; ignore them
 					continue;
 				}
-				$this->notifiers[$notifierId]->getCallback()();
+				$this->notifiers[$notifierId]();
 			}
 		}
 	}

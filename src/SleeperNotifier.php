@@ -50,9 +50,10 @@ class SleeperNotifier extends \Threaded{
 	final public function wakeupSleeper() : void{
 		$shared = $this->sharedObject;
 		assert($shared !== null);
-		$shared->synchronized(function() use ($shared) : void{
-			if(!isset($shared[$this->sleeperId])){
-				$shared[$this->sleeperId] = $this->sleeperId;
+		$sleeperId = $this->sleeperId;
+		$shared->synchronized(function() use ($shared, $sleeperId) : void{
+			if(!isset($shared[$sleeperId])){
+				$shared[$sleeperId] = $sleeperId;
 				$shared->notify();
 			}
 		});

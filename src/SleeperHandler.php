@@ -35,8 +35,8 @@ class SleeperHandler{
 	private $sharedObject;
 
 	/**
-	 * @var callable[]
-	 * @phpstan-var array<int, callable() : void>
+	 * @var \Closure[]
+	 * @phpstan-var array<int, \Closure() : void>
 	 */
 	private $notifiers = [];
 
@@ -48,10 +48,10 @@ class SleeperHandler{
 	}
 
 	/**
-	 * @param callable        $handler Called when the notifier wakes the server up, of the signature `function() : void`
-	 * @phpstan-param callable() : void $handler
+	 * @param \Closure $handler Called when the notifier wakes the server up, of the signature `function() : void`
+	 * @phpstan-param \Closure() : void $handler
 	 */
-	public function addNotifier(SleeperNotifier $notifier, callable $handler) : void{
+	public function addNotifier(SleeperNotifier $notifier, \Closure $handler) : void{
 		$id = $this->nextSleeperId++;
 		$notifier->attachSleeper($this->sharedObject, $id);
 		$this->notifiers[$id] = $handler;

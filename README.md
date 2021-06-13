@@ -18,9 +18,9 @@ class SleepyThread extends \Thread{
 	/** @var \Threaded */
 	private $buffer;
 
-	public function __construct(\pocketmine\snooze\SleeperNotifier $notifier){
+	public function __construct(\pocketmine\snooze\SleeperNotifier $notifier, \Threaded $buffer){
 		$this->notifier = $notifier;
-		$this->buffer = new \Threaded();
+		$this->buffer = $buffer;
 	}
 
 	public function run() : void{
@@ -40,19 +40,16 @@ class SleepyThread extends \Thread{
 			$this->notifier->wakeupSleeper();
 		}
 	}
-
-	public function getLineFromBuffer() : ?string{
-		return $this->buffer->shift();
-	}
 }
 
 $sleeper = new \pocketmine\snooze\SleeperHandler();
 
 $notifier = new \pocketmine\snooze\SleeperNotifier();
-$thread = new SleepyThread($notifier);
-$sleeper->addNotifier($notifier, function() use($thread) : void{
+$buffer = new \Threaded();
+$thread = new SleepyThread($notifier, $buffer);
+$sleeper->addNotifier($notifier, function() use($buffer) : void{
 	//do some things when this notifier sends a notification
-	echo "Main thread got line: " . $thread->getLineFromBuffer();
+	echo "Main thread got line: " . $buffer->shift();
 });
 
 //don't start the thread until we add the notifier, otherwise we could get unexpected behaviour (race conditions)

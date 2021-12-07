@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Setup PHP
-        uses: pmmp/setup-php-actions@9c1b5efe55086857dbb502a14ef53f5b3b2788db
+        uses: pmmp/setup-php-action@9c1b5efe55086857dbb502a14ef53f5b3b2788db
         with:
           php-version: ${{ matrix.php }}
           install-path: ${{ github.workspace}}/php

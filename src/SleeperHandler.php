@@ -66,11 +66,11 @@ class SleeperHandler{
 	}
 
 	private function sleep(int $timeout) : void{
-		$this->sharedObject->synchronized(function(int $timeout) : void{
+		$this->sharedObject->synchronized(function() use ($timeout) : void{
 			if($this->sharedObject->count() === 0){
 				$this->sharedObject->wait($timeout);
 			}
-		}, $timeout);
+		});
 	}
 
 	/**

@@ -2,7 +2,7 @@ includes:
 	- tests/phpstan/configs/phpstan-bugs.neon
 
 parameters:
-	level: 8
+	level: 9
 	paths:
 		- src
 	stubFiles:

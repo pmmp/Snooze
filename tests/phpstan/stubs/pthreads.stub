@@ -3,4 +3,13 @@
 /**
  * @implements \Traversable<array-key, mixed>
  */
-class Threaded implements \Traversable{}
+class Threaded implements \Traversable{
+
+    /**
+     * @template TReturn
+     * @param callable() : TReturn $function
+     * @param mixed ...$args
+     * @return TReturn
+     */
+    public function synchronized(callable $function, ...$args){}
+}

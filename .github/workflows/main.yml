@@ -10,39 +10,18 @@ jobs:
     if: "!contains(github.event.head_commit.message, '[ci skip]')"
     strategy:
       matrix:
-        include:
-          - php: 7.3.28
-            pthreads-version: 34d7e6b91ed92a625760fedd667e7cba2009e463
-          - php: 7.4.18
-            pthreads-version: 34d7e6b91ed92a625760fedd667e7cba2009e463
-          - php: 8.0.5
-            pthreads-version: bc16ee7b5a21faee9bd1743f830f7135b763fb56
+        php: ["8.0.13"]
 
     name: PHP ${{ matrix.php }}
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
 
-      - name: Restore PHP build cache
-        id: php-build-cache
-        uses: actions/cache@v2
+      - name: Setup PHP
+        uses: pmmp/setup-php-actions@9c1b5efe55086857dbb502a14ef53f5b3b2788db
         with:
-          path: ${{ github.workspace }}/php
-          key: php-build-${{ matrix.php }}-pthreads-${{ matrix.pthreads-version }}
-
-      - name: Compile PHP
-        if: steps.php-build-cache.outputs.cache-hit != 'true'
-        run: |
-          git clone https://github.com/php-build/php-build.git
-          cd php-build
-          ./install-dependencies.sh
-          echo '"pthreads",,"https://github.com/pmmp/pthreads.git",,,"extension",' >> share/php-build/extension/definition
-          export CFLAGS="$CFLAGS -march=x86-64"
-          export CXXFLAGS="$CXXFLAGS -march=x86-64"
-          PHP_BUILD_INSTALL_EXTENSION='pthreads=@${{ matrix.pthreads-version }}' PHP_BUILD_ZTS_ENABLE=on ./bin/php-build "${{ matrix.php }}" "$GITHUB_WORKSPACE/php"
-          
-      - name: Prefix PHP to PATH
-        run: echo $GITHUB_WORKSPACE/php/bin >> $GITHUB_PATH
+          php-version: ${{ matrix.php }}
+          install-path: ${{ github.workspace}}/php
 
       - name: Cache Composer packages
         id: composer-cache

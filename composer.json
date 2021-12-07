@@ -3,8 +3,8 @@
     "description": "Thread notification management library for code using the pthreads extension",
     "type": "library",
     "require": {
-        "php-64bit": "^7.3 || ^8.0",
-        "ext-pthreads": "~3.2.0 || ^4.0"
+        "php-64bit": "^8.0",
+        "ext-pthreads": "^4.0"
     },
     "require-dev": {
         "phpstan/phpstan": "1.2.0",

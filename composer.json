@@ -16,5 +16,10 @@
         "psr-4": {
             "pocketmine\\snooze\\": "src/"
         }
+    },
+    "config": {
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
     }
 }

@@ -6,7 +6,6 @@ parameters:
 			path: ../../../src/SleeperNotifier.php
 
 		-
-			message: "#^Strict comparison using \\!\\=\\= between Threaded and null will always evaluate to true\\.$#"
+			message: "#^Strict comparison using \\!\\=\\= between ThreadedArray\\<int, int\\> and null will always evaluate to true\\.$#"
 			count: 1
 			path: ../../../src/SleeperNotifier.php
-

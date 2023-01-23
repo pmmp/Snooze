@@ -28,14 +28,20 @@ use function assert;
 /**
  * Notifiers are Threaded objects which can be attached to threaded sleepers in order to wake them up.
  */
-class SleeperNotifier extends \Threaded{
-	/** @var \Threaded */
+class SleeperNotifier extends \ThreadedBase{
+	/**
+	 * @var \ThreadedArray
+	 * @phpstan-var \ThreadedArray<int, int>
+	 */
 	private $sharedObject;
 
 	/** @var int */
 	private $sleeperId;
 
-	final public function attachSleeper(\Threaded $sharedObject, int $id) : void{
+	/**
+	 * @phpstan-param \ThreadedArray<int, int> $sharedObject
+	 */
+	final public function attachSleeper(\ThreadedArray $sharedObject, int $id) : void{
 		$this->sharedObject = $sharedObject;
 		$this->sleeperId = $id;
 	}

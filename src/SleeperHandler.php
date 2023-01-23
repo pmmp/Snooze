@@ -31,7 +31,10 @@ use function microtime;
  * notifications are received from the notifiers.
  */
 class SleeperHandler{
-	/** @var \Threaded */
+	/**
+	 * @var \ThreadedArray
+	 * @phpstan-var \ThreadedArray<int, int>
+	 */
 	private $sharedObject;
 
 	/**
@@ -44,7 +47,7 @@ class SleeperHandler{
 	private $nextSleeperId = 0;
 
 	public function __construct(){
-		$this->sharedObject = new \Threaded();
+		$this->sharedObject = new \ThreadedArray();
 	}
 
 	/**

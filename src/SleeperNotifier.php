@@ -23,15 +23,17 @@ declare(strict_types=1);
 
 namespace pocketmine\snooze;
 
+use pmmp\thread\ThreadSafe;
+use pmmp\thread\ThreadSafeArray;
 use function assert;
 
 /**
  * Notifiers are Threaded objects which can be attached to threaded sleepers in order to wake them up.
  */
-class SleeperNotifier extends \ThreadedBase{
+class SleeperNotifier extends ThreadSafe{
 	/**
-	 * @var \ThreadedArray
-	 * @phpstan-var \ThreadedArray<int, int>
+	 * @var ThreadSafeArray
+	 * @phpstan-var ThreadSafeArray<int, int>
 	 */
 	private $sharedObject;
 
@@ -39,9 +41,9 @@ class SleeperNotifier extends \ThreadedBase{
 	private $sleeperId;
 
 	/**
-	 * @phpstan-param \ThreadedArray<int, int> $sharedObject
+	 * @phpstan-param ThreadSafeArray<int, int> $sharedObject
 	 */
-	final public function attachSleeper(\ThreadedArray $sharedObject, int $id) : void{
+	final public function attachSleeper(ThreadSafeArray $sharedObject, int $id) : void{
 		$this->sharedObject = $sharedObject;
 		$this->sleeperId = $id;
 	}

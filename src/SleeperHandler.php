@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace pocketmine\snooze;
 
+use pmmp\thread\ThreadSafeArray;
 use function count;
 use function microtime;
 
@@ -32,8 +33,8 @@ use function microtime;
  */
 class SleeperHandler{
 	/**
-	 * @var \ThreadedArray
-	 * @phpstan-var \ThreadedArray<int, int>
+	 * @var ThreadSafeArray
+	 * @phpstan-var ThreadSafeArray<int, int>
 	 */
 	private $sharedObject;
 
@@ -47,7 +48,7 @@ class SleeperHandler{
 	private $nextSleeperId = 0;
 
 	public function __construct(){
-		$this->sharedObject = new \ThreadedArray();
+		$this->sharedObject = new ThreadSafeArray();
 	}
 
 	/**

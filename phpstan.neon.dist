@@ -6,4 +6,4 @@ parameters:
 	paths:
 		- src
 	stubFiles:
-		- tests/phpstan/stubs/pthreads.stub
+		- tests/phpstan/stubs/pmmpthread.stub

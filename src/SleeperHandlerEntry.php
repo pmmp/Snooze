@@ -39,8 +39,8 @@ final class SleeperHandlerEntry extends ThreadSafe{
 	 * @phpstan-param ThreadSafeArray<int, int> $sharedObject
 	 */
 	public function __construct(
-		private ThreadSafeArray $sharedObject,
-		private int $id
+		private readonly ThreadSafeArray $sharedObject,
+		private readonly int $id
 	){}
 
 	final public function getNotifierId() : int{

@@ -27,16 +27,15 @@ class SleeperHandler{
 	 * @var ThreadSafeArray
 	 * @phpstan-var ThreadSafeArray<int, int>
 	 */
-	private $sharedObject;
+	private readonly ThreadSafeArray $sharedObject;
 
 	/**
 	 * @var \Closure[]
 	 * @phpstan-var array<int, \Closure() : void>
 	 */
-	private $handlers = [];
+	private array $handlers = [];
 
-	/** @var int */
-	private $nextSleeperId = 0;
+	private int $nextSleeperId = 0;
 
 	public function __construct(){
 		$this->sharedObject = new ThreadSafeArray();

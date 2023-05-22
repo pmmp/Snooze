@@ -29,8 +29,8 @@ final class SleeperNotifier{
 	 * @phpstan-param ThreadSafeArray<int, int> $sharedObject
 	 */
 	public function __construct(
-		private ThreadSafeArray $sharedObject,
-		private int $notifierId
+		private readonly ThreadSafeArray $sharedObject,
+		private readonly int $notifierId
 	){}
 
 	/**

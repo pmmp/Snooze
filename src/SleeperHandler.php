@@ -54,11 +54,13 @@ class SleeperHandler{
 	}
 
 	/**
-	 * Removes an entry from the sleeper. Note that this does not prevent the notifier waking the sleeper up - it just
-	 * stops the notifier getting actions processed from the main thread.
+	 * Removes a callback from the sleeper by its ID. Note that this does not prevent the notifier waking the sleeper
+	 * up - it just stops the notifier getting actions processed from the main thread.
+	 *
+	 * @see SleeperHandlerEntry::getNotifierId()
 	 */
-	public function removeNotifier(SleeperHandlerEntry $notifier) : void{
-		unset($this->handlers[$notifier->getNotifierId()]);
+	public function removeNotifier(int $notifierId) : void{
+		unset($this->handlers[$notifierId]);
 	}
 
 	private function sleep(int $timeout) : void{

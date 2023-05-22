@@ -68,4 +68,8 @@ while(true){
 	//this will wait indefinitely until something wakes it up, and then return immediately
 	$sleeper->sleepUntilNotification();
 }
+
+$thread->join();
+//Unregister the notifier when you're done with it
+$sleeper->removeNotifier($sleeperEntry->getNotifierId());
 ```

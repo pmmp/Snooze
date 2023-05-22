@@ -11,20 +11,17 @@ The thread should call `wakeupSleeper()` on its `SleeperNotifier`, which will ca
 It's similar to using the `select()` system call on an array of sockets or file descriptors, but with threads instead.
 
 ## Example
-```php
-class SleepyThread extends \Thread{
-	/** @var \pocketmine\snooze\SleeperNotifier */
-	private $notifier;
-	/** @var \Threaded */
-	private $buffer;
 
-	public function __construct(\pocketmine\snooze\SleeperNotifier $notifier, \Threaded $buffer){
-		$this->notifier = $notifier;
-		$this->buffer = $buffer;
-	}
+```php
+class NotifyingThread extends \pmmp\thread\Thread{
+	public function __construct(
+	    private \pocketmine\snooze\SleeperHandlerEntry $sleeperEntry,
+	    private \pmmp\thread\ThreadSafeArray $buffer
+	){}
 
 	public function run() : void{
 		$stdin = fopen('php://stdin', 'r');
+		$notifer = $this->sleeperEntry->createNotifier();
 		while(true){
 			echo "Type something and press ENTER:\n";
 			//do whatever you're doing
@@ -37,22 +34,20 @@ class SleepyThread extends \Thread{
 			//the parent thread doesn't have to be sleeping to receive this, it'll process it next time it tries to go
 			//back to sleep
 			//if the parent thread is sleeping, it'll be woken up to process notifications immediately.
-			$this->notifier->wakeupSleeper();
+			$notifer->wakeupSleeper();
 		}
 	}
 }
 
 $sleeper = new \pocketmine\snooze\SleeperHandler();
 
-$notifier = new \pocketmine\snooze\SleeperNotifier();
-$buffer = new \Threaded();
-$thread = new SleepyThread($notifier, $buffer);
-$sleeper->addNotifier($notifier, function() use($buffer) : void{
+$buffer = new \pmmp\thread\ThreadSafeArray();
+$sleeperEntry = $sleeper->addNotifier(function() use($buffer) : void{
 	//do some things when this notifier sends a notification
 	echo "Main thread got line: " . $buffer->shift();
 });
 
-//don't start the thread until we add the notifier, otherwise we could get unexpected behaviour (race conditions)
+$thread = new NotifyingThread($sleeperEntry, $buffer);
 $thread->start();
 
 while(true){

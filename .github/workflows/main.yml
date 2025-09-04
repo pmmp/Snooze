@@ -15,7 +15,7 @@ jobs:
     name: PHP ${{ matrix.php }}
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Setup PHP
         uses: pmmp/setup-php-action@3.2.0

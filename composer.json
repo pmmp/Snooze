@@ -7,7 +7,7 @@
         "ext-pmmpthread": "^6.0"
     },
     "require-dev": {
-        "phpstan/phpstan": "2.1.22",
+        "phpstan/phpstan": "2.1.29",
         "phpstan/extension-installer": "^1.0",
         "phpstan/phpstan-strict-rules": "^2.0"
     },

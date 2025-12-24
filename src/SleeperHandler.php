@@ -103,6 +103,9 @@ class SleeperHandler{
 		while(true){
 			$notifierIds = $this->sharedObject->synchronized(function() : array{
 				$notifierIds = [];
+				//phpstan can't understand ThreadSafeArray generics because ThreadSafe implements
+				//IteratorAggregate<mixed, mixed>, so we need to force the issue here
+				/** @var int $notifierId */
 				foreach($this->sharedObject as $notifierId => $_){
 					$notifierIds[$notifierId] = $notifierId;
 					unset($this->sharedObject[$notifierId]);
